@@ -427,7 +427,7 @@ vg_output_timing_console(vg_context_t *vcp, double count,
 		prob = 1.0f - exp(-count/vcp->vc_chance);
 
 		if (prob <= 0.999) {
-			p = snprintf(&linebuf[p], rem, "[Prob %.1f%%]",
+			p = snprintf(&linebuf[p], rem, "[Wykonano %.1f%%]",
 				     prob * 100);
 			assert(p > 0);
 			rem -= p;
@@ -482,10 +482,10 @@ vg_output_timing_console(vg_context_t *vcp, double count,
 
 	if (vcp->vc_found) {
 		if (vcp->vc_remove_on_match)
-			p = snprintf(&linebuf[p], rem, "[Found %lld/%ld]",
+			p = snprintf(&linebuf[p], rem, "[Znaleziono %lld/%ld]",
 				     vcp->vc_found, vcp->vc_npatterns_start);
 		else
-			p = snprintf(&linebuf[p], rem, "[Found %lld]",
+			p = snprintf(&linebuf[p], rem, "[Znaleziony %lld]",
 				     vcp->vc_found);
 		assert(p > 0);
 		rem -= p;
