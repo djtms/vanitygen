@@ -295,34 +295,34 @@ usage(const char *name)
 {
 	fprintf(stderr,
 "Vanitygen %s (" OPENSSL_VERSION_TEXT ")\n"
-"Usage: %s [-vqnrik1NT] [-t <threads>] [-f <filename>|-] [<pattern>...]\n"
-"Generates a bitcoin receiving address matching <pattern>, and outputs the\n"
-"address and associated private key.  The private key may be stored in a safe\n"
-"location or imported into a bitcoin client to spend any balance received on\n"
-"the address.\n"
-"By default, <pattern> is interpreted as an exact prefix.\n"
+"Użycie: %s [-vqnrik1NT] [-t <wątków>] [-f <plik> | -] [<prefix> ...] \n" 
+"Generuje adres odbiorczy Bitcoin pasujący do <prefix>, i wysyła \n" 
+"Adres oraz powiązany klucz prywatny.  Klucz prywatny może być przechowywany w bezpieczej\n"
+"lokalizacji lub zaimportowany do klienta bitcoin w celu wypłacania środków z\n"
+"tego adresu.\n"
+"Domyślnie, <wzorzec> jest interpretowane jako dokładny prefix.\n"
 "\n"
-"Options:\n"
-"-v            Verbose output\n"
-"-q            Quiet output\n"
-"-n            Simulate\n"
-"-r            Use regular expression match instead of prefix\n"
-"              (Feasibility of expression is not checked)\n"
-"-i            Case-insensitive prefix search\n"
-"-k            Keep pattern and continue search after finding a match\n"
-"-1            Stop after first match\n"
-"-N            Generate namecoin address\n"
-"-T            Generate bitcoin testnet address\n"
-"-X <version>  Generate address with the given version\n"
-"-F <format>   Generate address with the given format (pubkey or script)\n"
-"-P <pubkey>   Specify base public key for piecewise key generation\n"
-"-e            Encrypt private keys, prompt for password\n"
-"-E <password> Encrypt private keys with <password> (UNSAFE)\n"
-"-t <threads>  Set number of worker threads (Default: number of CPUs)\n"
-"-f <file>     File containing list of patterns, one per line\n"
-"              (Use \"-\" as the file name for stdin)\n"
-"-o <file>     Write pattern matches to <file>\n"
-"-s <file>     Seed random number generator from <file>\n",
+"Opcje:\n"
+"-v            Szczegółowe komunikaty\n"
+"-q            Ciche wyjście\n"
+"-n            Symulacja\n"
+"-r            używaj dopasowanego wyrażenia regularnego zamiast prefiksu\n"
+"              (wykonalności wyrażania nie jest sprawdzana)\n"
+"-i            Nie wrażliwy na wielkości znaków prefixu\n"
+"-k            zachować i kontynuować wyszukiwanie wzorca po znalezieniu dopasowania\n"
+"-1            Zatrzymaj po pierwszym wyniku\n"
+"-N            Generowanie adresu Namecoin\n"
+"-T            Generowanie adresu bitcoin testnet\n"
+"-X <wersja>   Generowanie adresu w/g wersji\n"
+"-F <format>   Generowanie adresu w/g podanego formatu (pubkey lub script)\n"
+"-P <pubkey>   Określ podstawowy klucz publiczny dla for piecewise key generation\n"
+"-e            Szyfrowanie klucza prywatnego, pytaj o hasło\n"
+"-E <hasło>    Szyfrowanie klucza prywatnego z użyciem <hasło> (NIEBEZPIECZNE)\n"
+"-t <wątki>    Ustaw liczbę wątków roboczych (Domyślnie: liczba procesorów)\n"
+"-f <plik>     Plik listy wzorców, po jednym w wiersz\n"
+"              (Użyj \"-\" jako plik wejścia stdin)\n"
+"-o <plik>     Zapisz pasujący wzorzec do <pliku>\n"
+"-s <plik>     Generator liczb losowych z <pliku>\n",
 version, name);
 }
 
@@ -405,7 +405,7 @@ main(int argc, char **argv)
 			else
 			if (strcmp(optarg, "pubkey")) {
 				fprintf(stderr,
-					"Invalid format '%s'\n", optarg);
+					"Nieprawidłowy format '%s'\n", optarg);
 				return 1;
 			}
 			break;
@@ -422,7 +422,7 @@ main(int argc, char **argv)
 			EC_KEY_free(pkey);
 			if (pubkey_base == NULL) {
 				fprintf(stderr,
-					"Invalid base pubkey\n");
+					"Nieprawidłowy base pubkey\n");
 				return 1;
 			}
 			break;
@@ -438,14 +438,14 @@ main(int argc, char **argv)
 			nthreads = atoi(optarg);
 			if (nthreads == 0) {
 				fprintf(stderr,
-					"Invalid thread count '%s'\n", optarg);
+					"Nieprawidłowa liczba wątków '%s'\n", optarg);
 				return 1;
 			}
 			break;
 		case 'f':
 			if (npattfp >= MAX_FILE) {
 				fprintf(stderr,
-					"Too many input files specified\n");
+					"Podano za dużo plików wejściowych\n");
 				return 1;
 			}
 			if (!strcmp(optarg, "-")) {
@@ -459,7 +459,7 @@ main(int argc, char **argv)
 				fp = fopen(optarg, "r");
 				if (!fp) {
 					fprintf(stderr,
-						"Could not open %s: %s\n",
+						"Nie można otworzyć %s: %s\n",
 						optarg, strerror(errno));
 					return 1;
 				}
@@ -572,7 +572,7 @@ main(int argc, char **argv)
 	for (i = 0; i < npattfp; i++) {
 		fp = pattfp[i];
 		if (!vg_read_file(fp, &patterns, &npatterns)) {
-			fprintf(stderr, "Failed to load pattern file\n");
+			fprintf(stderr, "Nie udało się załadować pliku wzorców\n");
 			return 1;
 		}
 		if (fp != stdin)
@@ -588,7 +588,7 @@ main(int argc, char **argv)
 	}
 
 	if (!vcp->vc_npatterns) {
-		fprintf(stderr, "No patterns to search\n");
+		fprintf(stderr, "Brak wzorców do wyszukania\n");
 		return 1;
 	}
 
@@ -602,12 +602,12 @@ main(int argc, char **argv)
 		if (!vg_check_password_complexity(key_password, verbose))
 			fprintf(stderr,
 				"WARNING: Protecting private keys with "
-				"weak password\n");
+				"słabe hasło\n");
 	}
 
 	if ((verbose > 0) && regex && (vcp->vc_npatterns > 1))
 		fprintf(stderr,
-			"Regular expressions: %ld\n", vcp->vc_npatterns);
+			"Wyrażenia regularne: %ld\n", vcp->vc_npatterns);
 
 	if (simulate)
 		return 0;
