@@ -465,11 +465,11 @@ vg_output_timing_console(vg_context_t *vcp, double count,
 
 			if (time > 1000000) {
 				p = snprintf(&linebuf[p], rem,
-					     "[%d%% in %e%s]",
+					     "[%d%% w %e%s]",
 					     (int) (100 * targ), time, unit);
 			} else {
 				p = snprintf(&linebuf[p], rem,
-					     "[%d%% in %.1f%s]",
+					     "[%d%% w %.1f%s]",
 					     (int) (100 * targ), time, unit);
 			}
 			assert(p > 0);
@@ -554,7 +554,7 @@ vg_output_match_console(vg_context_t *vcp, EC_KEY *pkey, const char *pattern)
 	}
 
 	if (!vcp->vc_result_file || (vcp->vc_verbose > 0)) {
-		printf("\r%79s\rPattern: %s\n", "", pattern);
+		printf("\r%79s\rWzorzec: %s\n", "", pattern);
 	}
 
 	if (vcp->vc_verbose > 0) {
@@ -575,8 +575,8 @@ vg_output_match_console(vg_context_t *vcp, EC_KEY *pkey, const char *pattern)
 
 	if (!vcp->vc_result_file || (vcp->vc_verbose > 0)) {
 		if (isscript)
-			printf("P2SHAddress: %s\n", addr2_buf);
-		printf("Address: %s\n"
+			printf("P2SHAdres: %s\n", addr2_buf);
+		printf("Adres: %s\n"
 		       "%s: %s\n",
 		       addr_buf, keytype, privkey_buf);
 	}
@@ -589,12 +589,12 @@ vg_output_match_console(vg_context_t *vcp, EC_KEY *pkey, const char *pattern)
 				strerror(errno));
 		} else {
 			fprintf(fp,
-				"Pattern: %s\n"
+				"Wzorzec: %s\n"
 				, pattern);
 			if (isscript)
-				fprintf(fp, "P2SHAddress: %s\n", addr2_buf);
+				fprintf(fp, "P2SHAdres: %s\n", addr2_buf);
 			fprintf(fp,
-				"Address: %s\n"
+				"Adres: %s\n"
 				"%s: %s\n",
 				addr_buf, keytype, privkey_buf);
 			fclose(fp);
@@ -774,7 +774,7 @@ get_prefix_ranges(int addrtype, const char *pfx, BIGNUM **result,
 			 * Do not allow the prefix to constrain the
 			 * check value, this is ridiculous.
 			 */
-			fprintf(stderr, "Prefix '%s' is too long\n", pfx);
+			fprintf(stderr, "Wzorzec '%s' jest za długi\n", pfx);
 			goto out;
 		}
 
@@ -1055,7 +1055,7 @@ vg_prefix_add(avl_root_t *rootp, const char *pattern, BIGNUM *low, BIGNUM *high)
 		vp2 = vg_prefix_avl_insert(rootp, vp);
 		if (vp2 != NULL) {
 			fprintf(stderr,
-				"Prefix '%s' ignored, overlaps '%s'\n",
+				"Wzorzec '%s' ignorowany, overlaps '%s'\n",
 				pattern, vp2->vp_pattern);
 			vg_prefix_free(vp);
 			vp = NULL;
@@ -1260,10 +1260,10 @@ vg_prefix_context_next_difficulty(vg_prefix_context_t *vcpp,
 	if (vcpp->base.vc_verbose > 0) {
 		if (vcpp->base.vc_npatterns > 1)
 			fprintf(stderr,
-				"Next match difficulty: %s (%ld prefixes)\n",
+				"Kolejna trudność dopasowania: %s (%ld prefixes)\n",
 				dbuf, vcpp->base.vc_npatterns);
 		else
-			fprintf(stderr, "Difficulty: %s\n", dbuf);
+			fprintf(stderr, "Trudność: %s\n", dbuf);
 	}
 	vcpp->base.vc_chance = atof(dbuf);
 	OPENSSL_free(dbuf);
@@ -1307,14 +1307,14 @@ vg_prefix_context_add_patterns(vg_context_t *vcp,
 			/* Case-enumerate the prefix */
 			if (!prefix_case_iter_init(&caseiter, patterns[i])) {
 				fprintf(stderr,
-					"Prefix '%s' is too long\n",
+					"Prefix '%s' jest za długi\n",
 					patterns[i]);
 				continue;
 			}
 
 			if (caseiter.ci_nbits > 16) {
 				fprintf(stderr,
-					"WARNING: Prefix '%s' has "
+					"Uwaga: Wzorzec '%s' ma "
 					"2^%d case-varied derivatives\n",
 					patterns[i], caseiter.ci_nbits);
 			}
@@ -1356,7 +1356,7 @@ vg_prefix_context_add_patterns(vg_context_t *vcp,
 
 		if (ret == -2) {
 			fprintf(stderr,
-				"Prefix '%s' not possible\n", patterns[i]);
+				"Prefix '%s' nie jest możliwy\n", patterns[i]);
 			impossible++;
 		}
 
@@ -1377,7 +1377,7 @@ vg_prefix_context_add_patterns(vg_context_t *vcp,
 
 			dbuf = BN_bn2dec(&bntmp3);
 			fprintf(stderr,
-				"Prefix difficulty: %20s %s\n",
+				"Trudność prefix: %20s %s\n",
 				dbuf, patterns[i]);
 			OPENSSL_free(dbuf);
 		}
@@ -1405,7 +1405,7 @@ vg_prefix_context_add_patterns(vg_context_t *vcp,
 			break;
 		}
 		fprintf(stderr,
-			"Hint: valid %s addresses begin with %s\n", ats, bw);
+			"Podpowiedź: poprawny %s adres rozpoczyna się od %s\n", ats, bw);
 	}
 
 	if (npfx)
@@ -1661,13 +1661,13 @@ vg_regex_context_add_patterns(vg_context_t *vcp,
 			if (pcre_erroffset > 0)
 				fprintf(stderr,
 					"%s", &spaces[16 - pcre_erroffset]);
-			fprintf(stderr, "^\nRegex error: %s\n", pcre_errptr);
+			fprintf(stderr, "^\nBłąd wyrażenia: %s\n", pcre_errptr);
 			continue;
 		}
 		vcrp->vcr_regex_extra[nres] =
 			pcre_study(vcrp->vcr_regex[nres], 0, &pcre_errptr);
 		if (pcre_errptr) {
-			fprintf(stderr, "Regex error: %s\n", pcre_errptr);
+			fprintf(stderr, "Błąd wyrażenia: %s\n", pcre_errptr);
 			pcre_free(vcrp->vcr_regex[nres]);
 			continue;
 		}
@@ -1769,7 +1769,7 @@ restart_loop:
 
 		if (d <= 0) {
 			if (d != PCRE_ERROR_NOMATCH) {
-				fprintf(stderr, "PCRE error: %d\n", d);
+				fprintf(stderr, "Błąd PCRE: %d\n", d);
 				res = 2;
 				goto out;
 			}
